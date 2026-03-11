@@ -1,8 +1,8 @@
 body{
-font-family: Arial, sans-serif;
+font-family: "Segoe UI", Arial, sans-serif;
 background: linear-gradient(135deg,#4CAF50,#8BC34A);
 margin:0;
-height:100vh;
+min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -11,24 +11,46 @@ color:#333;
 
 .main{
 text-align:center;
+width:100%;
+max-width:1000px;
+padding:20px;
 }
 
 h1{
 color:white;
-margin-bottom:20px;
+margin-bottom:10px;
+font-size:32px;
+}
+
+.main p{
+color:#f5f5f5;
+margin-bottom:30px;
+}
+
+.container{
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
 }
 
 .card{
 background:white;
 padding:30px;
 border-radius:12px;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
 width:350px;
-transition: transform 0.3s;
+transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover{
-transform: translateY(-5px);
+transform: translateY(-6px);
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+.card h2{
+margin-bottom:15px;
+color:#2E7D32;
 }
 
 input, select{
@@ -38,6 +60,7 @@ margin:10px 0;
 border-radius:6px;
 border:1px solid #ccc;
 font-size:14px;
+transition: border 0.2s, box-shadow 0.2s;
 }
 
 input:focus, select:focus{
@@ -55,11 +78,13 @@ border:none;
 border-radius:6px;
 cursor:pointer;
 font-size:16px;
-transition: background 0.3s;
+margin-top:10px;
+transition: background 0.3s, transform 0.1s;
 }
 
 button:hover{
 background:#1B5E20;
+transform:scale(1.02);
 }
 
 button:disabled{
@@ -67,17 +92,22 @@ background:#9E9E9E;
 cursor:not-allowed;
 }
 
-.result-card{
-background:white;
-padding:40px;
-border-radius:12px;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
-width:500px;
-text-align:left;
+#advice_result, #yield_result{
+margin-top:15px;
+font-weight:500;
+color:#333;
+line-height:1.5;
 }
 
-#advice{
-white-space:pre-wrap;
-margin-top:20px;
-line-height:1.6;
+@media (max-width: 768px){
+
+.container{
+flex-direction:column;
+align-items:center;
+}
+
+.card{
+width:90%;
+}
+
 }

@@ -17,7 +17,13 @@
 <h1>🌾 AI Farmer Adviser</h1>
 <p>Smart farming advice powered by AI</p>
 
+<div class="container">
+
+<!-- AI Advice Section -->
+
 <div class="card">
+
+<h2>🤖 AI Farming Advice</h2>
 
 <input id="name" placeholder="Farmer Name">
 
@@ -32,7 +38,44 @@
 <option value="hindi">Hindi</option>
 </select>
 
-<button onclick="generateAdvice()">Get AI Advice</button>
+<button id="adviceBtn" onclick="generateAdvice()">
+Get AI Advice
+</button>
+
+<p id="advice_result"></p>
+
+</div>
+
+<!-- Crop Yield Prediction Section -->
+
+<div class="card">
+
+<h2>📊 Crop Yield Prediction</h2>
+
+<select id="area">
+<option>India</option>
+<option>New Zealand</option>
+<option>Pakistan</option>
+<option>Australia</option>
+</select>
+
+<input id="crop_prediction" placeholder="Crop (Wheat, Rice, etc.)">
+
+<input id="year" placeholder="Year">
+
+<input id="rainfall" placeholder="Rainfall (mm)">
+
+<input id="pesticide" placeholder="Pesticide Amount">
+
+<input id="temperature" placeholder="Temperature (°C)">
+
+<button id="predictBtn" onclick="predictYield()">
+Predict Yield
+</button>
+
+<p id="yield_result"></p>
+
+</div>
 
 </div>
 
@@ -41,5 +84,4 @@
 <script src="script.js"></script>
 
 </body>
-
 </html>

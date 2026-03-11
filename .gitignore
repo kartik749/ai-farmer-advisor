@@ -1,2 +1,6 @@
 node_modules 
 .env 
+*.pkl
+.venv/
+__py_cache__/
+crop_yield_model.cpkl

@@ -1,23 +1,61 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
-<title>Farming Advice</title>
-<link rel="stylesheet" href="style.css">
+
+<title>AI Farmer Adviser | Result</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
+<div class="main">
+
+<h1>🌾 AI Farmer Adviser</h1>
+<p>Smart Farming Guidance Powered by Artificial Intelligence</p>
+
 <div class="result-card">
 
-<h2 id="farmerName"></h2>
+<div class="farmer-header">
+<h2 id="farmerName">Farmer</h2>
+<p class="subtitle">Personalized Farming Recommendation</p>
+</div>
+
+<div class="advice-section">
 
 <h3>🌱 Crop Advice</h3>
 
+<div class="advice-box">
 <pre id="advice">Loading AI advice...</pre>
+</div>
 
-<button onclick="goBack()">Ask Again</button>
+</div>
+
+<div class="tips">
+
+<h3>💡 Quick Farming Tips</h3>
+
+<ul>
+<li>Monitor soil moisture regularly</li>
+<li>Use balanced fertilizers</li>
+<li>Check weather forecasts before irrigation</li>
+<li>Inspect crops for pests weekly</li>
+</ul>
+
+</div>
+
+<div class="button-section">
+
+<button onclick="goBack()">🔁 Ask for Advice Again</button>
+
+</div>
+
+</div>
 
 </div>
 
