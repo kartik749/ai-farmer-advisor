@@ -1,3 +1,5 @@
+const BACKEND_URL = "https://ai-farmer-advisor-1.onrender.com";
+
 async function generateAdvice(){
 
 const nameEl = document.getElementById("name");
@@ -26,7 +28,7 @@ button.textContent = "Generating Advice...";
 
 try{
 
-const response = await fetch("/advice",{
+const response = await fetch("${BACKEND_URL}/advice",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
@@ -88,7 +90,7 @@ button.textContent = "Predicting...";
 
 try{
 
-const response = await fetch("/predict-yield",{
+const response = await fetch("${BACKEND_URL}/predict-yield",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
