@@ -1,87 +1,84 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<title>AI Farmer Adviser</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <title>AI Farmer Adviser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="main">
+    <div class="header">
+        <h1>🌾 AI Farmer Adviser</h1>
+        <p>Smart farming advice powered by AI</p>
+    </div>
 
-<h1>🌾 AI Farmer Adviser</h1>
-<p>Smart farming advice powered by AI</p>
+    <div class="container">
+        <div class="card">
+            <h2>🤖 AI Farming Advice</h2>
+            <div class="input-group">
+                <span class="icon">👤</span>
+                <input id="name" placeholder="Farmer Name">
+            </div>
+            <div class="input-group">
+                <span class="icon">🌾</span>
+                <input id="crop" placeholder="Crop (Wheat, Rice, etc.)">
+            </div>
+            <div class="input-group">
+                <span class="icon">🌋</span>
+                <input id="soil" placeholder="Soil Type">
+            </div>
+            <div class="input-group">
+                <span class="icon">☀️</span>
+                <input id="weather" placeholder="Weather Conditions">
+            </div>
+            <div class="input-group">
+                <span class="icon">🌐</span>
+                <select id="language">
+                    <option value="hindi">Hindi</option>
+                    <option value="english">English</option>
+                </select>
+            </div>
+            <button id="adviceBtn" onclick="generateAdvice()">Get AI Advice</button>
+            <div id="advice_result" class="result-box">
+                <small>AI Advice:</small>
+            </div>
+        </div>
 
-<div class="container">
-
-<!-- AI Advice Section -->
-
-<div class="card">
-
-<h2>🤖 AI Farming Advice</h2>
-
-<input id="name" placeholder="Farmer Name">
-
-<input id="crop" placeholder="Crop (Wheat, Rice, etc.)">
-
-<input id="soil" placeholder="Soil Type">
-
-<input id="weather" placeholder="Weather Conditions">
-
-<select id="language">
-<option value="english">English</option>
-<option value="hindi">Hindi</option>
-</select>
-
-<button id="adviceBtn" onclick="generateAdvice()">
-Get AI Advice
-</button>
-
-<p id="advice_result"></p>
-
-</div>
-
-<!-- Crop Yield Prediction Section -->
-
-<div class="card">
-
-<h2>📊 Crop Yield Prediction</h2>
-
-<select id="area">
-<option>India</option>
-<option>New Zealand</option>
-<option>Pakistan</option>
-<option>Australia</option>
-</select>
-
-<input id="crop_prediction" placeholder="Crop (Wheat, Rice, etc.)">
-
-<input id="year" placeholder="Year">
-
-<input id="rainfall" placeholder="Rainfall (mm)">
-
-<input id="pesticide" placeholder="Pesticide Amount">
-
-<input id="temperature" placeholder="Temperature (°C)">
-
-<button id="predictBtn" onclick="predictYield()">
-Predict Yield
-</button>
-
-<p id="yield_result"></p>
-
-</div>
-
-</div>
-
+        <div class="card">
+            <h2>📊 Crop Yield Prediction</h2>
+            <div class="input-group">
+                <span class="icon">In</span>
+                <select id="area">
+                    <option>India</option>
+                    <option>Pakistan</option>
+                    <option>New Zealand</option>
+                    <option>Australia</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="icon">🌾</span>
+                <select id="crop">
+                    <option>Wheat</option>
+                    <option>Rice</option>
+                    <option>Soyabeans</option>
+                    <option>Potatoes</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="icon">📅</span>
+                <input id="year" placeholder="Year">
+            </div>
+            <input id="rainfall" placeholder="Rainfall(in mm)">
+            <input id="pesticide" placeholder="Pesticides">
+            <input id="temperature" placeholder="Temperature">
+            <button id="predictBtn" onclick="predictYield()">Predict Yield</button>
+            <p id="yield_result"></p>
+        </div>
+    </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
