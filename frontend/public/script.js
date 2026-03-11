@@ -56,7 +56,7 @@ async function generateAdvice() {
 
 async function predictYield() {
   const areaEl = document.getElementById("area");
-  const cropEl = document.getElementById("crop");
+  const cropEl = document.getElementById("crop_prediction");
   const yearEl = document.getElementById("year");
   const rainfallEl = document.getElementById("rainfall");
   const pesticideEl = document.getElementById("pesticide");
