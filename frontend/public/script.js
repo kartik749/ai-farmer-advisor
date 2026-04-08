@@ -1,92 +1,115 @@
-// Replace this with your actual Render backend URL
+
+
 const BACKEND_URL = "https://ai-farmer-advisor-1.onrender.com";
 
-async function generateAdvice() {
-  const nameEl = document.getElementById("name");
-  const cropEl = document.getElementById("crop");
-  const soilEl = document.getElementById("soil");
-  const weatherEl = document.getElementById("weather");
-  const languageEl = document.getElementById("language");
+//  Tab Switching
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 
-  if (!nameEl || !cropEl || !soilEl || !weatherEl || !languageEl) {
-    alert("Some input fields are missing in HTML.");
+  document.getElementById('panel-advice').style.display = tab === 'advice' ? 'block' : 'none';
+  document.getElementById('panel-yield').style.display  = tab === 'yield'  ? 'block' : 'none';
+
+  // Re-trigger animation
+  const panel = document.getElementById('panel-' + tab);
+  panel.style.animation = 'none';
+  panel.offsetHeight; // reflow
+  panel.style.animation = '';
+}
+
+// Show/hide result states
+function showState(prefix, state) {
+  ['idle', 'loading', 'content'].forEach(s => {
+    const el = document.getElementById(prefix + '-' + s);
+    if (el) el.style.display = s === state ? (s === 'content' ? 'flex' : 'block') : 'none';
+  });
+}
+
+// Copy Advice 
+function copyAdvice() {
+  const text = document.getElementById('advice_result').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const original = btn.textContent;
+    btn.textContent = ' Copied!';
+    btn.style.borderColor = 'var(--sage)';
+    btn.style.color = 'var(--sage)';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  });
+}
+
+// Generate AI Advice
+async function generateAdvice() {
+  const name     = document.getElementById("name")?.value?.trim();
+  const crop     = document.getElementById("crop")?.value?.trim();
+  const soil     = document.getElementById("soil")?.value?.trim();
+  const weather  = document.getElementById("weather")?.value?.trim();
+  const language = document.getElementById("language")?.value;
+
+  if (!crop || !soil || !weather) {
+    shakeCard('advice');
     return;
   }
 
-  const name = nameEl.value;
-  const crop = cropEl.value;
-  const soil = soilEl.value;
-  const weather = weatherEl.value;
-  const language = languageEl.value;
+  const btn = document.getElementById("adviceBtn");
+  btn.disabled = true;
+  btn.querySelector('.btn-text').textContent = 'Generating…';
+  showState('advice', 'loading');
 
-  const button = document.getElementById("adviceBtn");
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Generating Advice...";
-  }
+  if (name) localStorage.setItem("farmerName", name);
 
   try {
-    // FIXED: Using backticks (`) instead of double quotes (") for template literals
     const response = await fetch(`${BACKEND_URL}/advice`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ crop, soil, weather, language })
     });
 
     const data = await response.json();
-
-    localStorage.setItem("farmerName", name);
     localStorage.setItem("advice", data.advice);
 
-    document.getElementById("advice_result").innerText =
-      "AI Advice:\n" + data.advice;
+    // Populate result
+    document.getElementById('result-crop-name').textContent = crop + ' · ' + soil;
+    document.getElementById('advice_result').innerText = data.advice;
+    showState('advice', 'content');
 
-  } catch (error) {
-    console.error(error);
-    alert("Error connecting to AI service");
+  } catch (err) {
+    console.error(err);
+    showState('advice', 'idle');
+    showToast('Could not connect to AI service. Please try again.');
   }
 
-  if (button) {
-    button.disabled = false;
-    button.textContent = "Get AI Advice";
-  }
+  btn.disabled = false;
+  btn.querySelector('.btn-text').textContent = 'Get AI Advice';
 }
 
+// ── Predict Yield ──
 async function predictYield() {
-  const areaEl = document.getElementById("area");
-  const cropEl = document.getElementById("crop_prediction");
-  const yearEl = document.getElementById("year");
-  const rainfallEl = document.getElementById("rainfall");
-  const pesticideEl = document.getElementById("pesticide");
-  const temperatureEl = document.getElementById("temperature");
+  const area        = document.getElementById("area")?.value;
+  const crop        = document.getElementById("crop_prediction")?.value;
+  const year        = document.getElementById("year")?.value;
+  const rainfall    = document.getElementById("rainfall")?.value;
+  const pesticide   = document.getElementById("pesticide")?.value;
+  const temperature = document.getElementById("temperature")?.value;
 
-  if (!areaEl || !cropEl || !yearEl || !rainfallEl || !pesticideEl || !temperatureEl) {
-    alert("Some prediction input fields are missing in HTML.");
+  if (!year || !rainfall || !pesticide || !temperature) {
+    shakeCard('yield');
     return;
   }
 
-  const area = areaEl.value;
-  const crop = cropEl.value;
-  const year = yearEl.value;
-  const rainfall = rainfallEl.value;
-  const pesticide = pesticideEl.value;
-  const temperature = temperatureEl.value;
-
-  const button = document.getElementById("predictBtn");
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Predicting...";
-  }
+  const btn = document.getElementById("predictBtn");
+  btn.disabled = true;
+  btn.querySelector('.btn-text').textContent = 'Predicting…';
+  showState('yield', 'loading');
 
   try {
-    // FIXED: Using backticks (`) for template literals
     const response = await fetch(`${BACKEND_URL}/predict-yield`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         area,
         crop,
@@ -98,23 +121,81 @@ async function predictYield() {
     });
 
     const data = await response.json();
-    const resultBox = document.getElementById("yield_result");
 
-    if (data.predicted_yield) {
-      resultBox.innerText =
-        "Estimated Crop Yield: " + data.predicted_yield.toFixed(2) + " hg/ha";
+    if (data.predicted_yield !== undefined) {
+      const yieldVal = data.predicted_yield;
+      document.getElementById('result-yield-crop').textContent = crop + ' · ' + area;
+      document.getElementById('yield_number').textContent = yieldVal.toLocaleString('en-IN', { maximumFractionDigits: 1 });
+      document.getElementById('yield_result').textContent =
+        `Predicted for ${year} with ${rainfall}mm rainfall and ${temperature}°C avg temperature.`;
+
+      showState('yield', 'content');
+
+      // Animate bar (cap at 50,000 hg/ha for scale)
+      setTimeout(() => {
+        const pct = Math.min((yieldVal / 50000) * 100, 100);
+        document.getElementById('yield-bar').style.width = pct + '%';
+      }, 100);
+
     } else {
-      resultBox.innerText =
-        "Prediction failed: " + (data.error || "Unknown error");
+      showState('yield', 'idle');
+      showToast(' Prediction failed: ' + (data.error || 'Unknown error'));
     }
 
-  } catch (error) {
-    console.error(error);
-    alert("Error connecting to Prediction API");
+  } catch (err) {
+    console.error(err);
+    showState('yield', 'idle');
+    showToast(' Could not connect to prediction service.');
   }
 
-  if (button) {
-    button.disabled = false;
-    button.textContent = "Predict Yield";
+  btn.disabled = false;
+  btn.querySelector('.btn-text').textContent = 'Predict Yield';
+}
+
+// ── Shake animation for empty fields ──
+function shakeCard(prefix) {
+  const card = document.querySelector(`#panel-${prefix} .form-card`);
+  card.style.animation = 'shake 0.4s ease';
+  setTimeout(() => card.style.animation = '', 400);
+
+  // Add shake keyframes if not already present
+  if (!document.querySelector('#shake-style')) {
+    const style = document.createElement('style');
+    style.id = 'shake-style';
+    style.textContent = `
+      @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20%      { transform: translateX(-8px); }
+        40%      { transform: translateX(8px); }
+        60%      { transform: translateX(-6px); }
+        80%      { transform: translateX(6px); }
+      }
+    `;
+    document.head.appendChild(style);
   }
+}
+
+// ── Toast Notification ──
+function showToast(message) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = `
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: rgba(14,31,20,0.95); border: 1px solid rgba(255,255,255,0.15);
+      color: #f5f0e8; padding: 14px 24px; border-radius: 12px; font-size: 14px;
+      backdrop-filter: blur(12px); z-index: 999; opacity: 0;
+      transition: all 0.3s ease; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      font-family: 'DM Sans', sans-serif;
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 3500);
 }

@@ -1,66 +1,397 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Farmer Adviser | Your Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --earth-deep:   #0e1f14;
+      --earth-mid:    #1e4028;
+      --earth-green:  #2d6a4f;
+      --sage:         #52b788;
+      --lime:         #95d5b2;
+      --gold:         #d4a843;
+      --gold-light:   #f0c96b;
+      --cream:        #fef9ef;
+      --warm-white:   #f5f0e8;
+      --glass-bg:     rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+      --text-primary: #f5f0e8;
+      --text-muted:   rgba(245,240,232,0.55);
+    }
 
-<title>AI Farmer Adviser | Result</title>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--earth-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-<link rel="stylesheet" href="style.css">
+    /* BG */
+    .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.3; }
+    .orb1 { width: 600px; height: 600px; background: radial-gradient(circle, #2d6a4f, transparent 70%); top: -200px; left: -150px; }
+    .orb2 { width: 400px; height: 400px; background: radial-gradient(circle, #d4a843, transparent 70%); top: 40%; right: -100px; }
+    .orb3 { width: 500px; height: 500px; background: radial-gradient(circle, #1e4028, transparent 70%); bottom: -200px; left: 30%; }
 
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    }
+
+    /* Wrapper */
+    .wrapper {
+      position: relative; z-index: 2;
+      max-width: 780px; margin: 0 auto;
+      padding: 50px 24px 80px;
+      animation: pageIn 0.7s ease both;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text-muted); font-size: 14px; text-decoration: none;
+      margin-bottom: 36px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--sage); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-emoji {
+      font-size: 64px;
+      margin-bottom: 16px;
+      display: block;
+      animation: floatEmoji 3s ease-in-out infinite;
+    }
+
+    @keyframes floatEmoji {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .greeting {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 .accent {
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex; align-items: center; gap: 16px; margin: 30px 0;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--glass-border); }
+    .divider-leaf { font-size: 18px; }
+
+    /* Advice Card */
+    .advice-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(212,168,67,0.12);
+      border: 1px solid rgba(212,168,67,0.25);
+      padding: 5px 14px;
+      border-radius: 30px;
+    }
+
+    .advice-body {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--warm-white);
+      white-space: pre-wrap;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    /* Tips Grid */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 580px) { .tips-grid { grid-template-columns: 1fr; } }
+
+    .tip-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .tip-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(82,183,136,0.3);
+    }
+
+    .tip-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .tip-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .tip-text strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, var(--earth-green), var(--sage));
+      color: var(--cream);
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s;
+      box-shadow: 0 8px 24px rgba(45,106,79,0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(45,106,79,0.5);
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 16px 24px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--sage);
+      color: var(--sage);
+      background: rgba(82,183,136,0.07);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      color: var(--text-muted);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    footer .logo { font-size: 22px; margin-bottom: 8px; display: block; }
+  </style>
 </head>
-
 <body>
 
-<div class="main">
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="grain"></div>
 
-<h1>🌾 AI Farmer Adviser</h1>
-<p>Smart Farming Guidance Powered by Artificial Intelligence</p>
+<div class="wrapper">
 
-<div class="result-card">
+  <a href="index.html" class="back-link">← Back to Adviser</a>
 
-<div class="farmer-header">
-<h2 id="farmerName">Farmer</h2>
-<p class="subtitle">Personalized Farming Recommendation</p>
+  <!-- Hero -->
+  <div class="hero">
+    <span class="hero-emoji">🌾</span>
+    <p class="greeting">Personalized Report</p>
+    <h1>Your <span class="accent">Farming</span><br/>Recommendation</h1>
+    <p class="hero-sub" id="hero-sub">Prepared especially for you</p>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-leaf">🌿</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- AI Advice Card -->
+  <div class="advice-card">
+    <div class="card-header">
+      <h2 class="card-title">🌱 AI Crop Advice</h2>
+      <span class="tag">AI Generated</span>
+    </div>
+    <div class="advice-body" id="advice-display">
+      Loading your personalized advice…
+    </div>
+  </div>
+
+  <!-- Quick Tips -->
+  <div class="tips-grid">
+    <div class="tip-card">
+      <span class="tip-icon">💧</span>
+      <div class="tip-text">
+        <strong>Monitor Soil Moisture</strong>
+        Check moisture levels regularly to avoid over- or under-watering.
+      </div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">⚗️</span>
+      <div class="tip-text">
+        <strong>Balanced Fertilizers</strong>
+        Use NPK ratios suited to your crop stage for optimal growth.
+      </div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🌦️</span>
+      <div class="tip-text">
+        <strong>Track Weather Forecasts</strong>
+        Plan irrigation and spraying around upcoming rain or heat waves.
+      </div>
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🔍</span>
+      <div class="tip-text">
+        <strong>Weekly Pest Inspection</strong>
+        Inspect leaves and roots every week to catch problems early.
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <a href="index.html" class="btn-primary">🔁 Ask for New Advice</a>
+    <button class="btn-secondary" onclick="shareAdvice()">📤 Share Report</button>
+  </div>
+
+  <footer>
+    <span class="logo">🌾</span>
+    AI Farmer Adviser &nbsp;·&nbsp; Powered by Artificial Intelligence
+  </footer>
+
 </div>
 
-<div class="advice-section">
+<script>
+  // Load from localStorage
+  window.addEventListener('DOMContentLoaded', () => {
+    const name   = localStorage.getItem('farmerName') || 'Farmer';
+    const advice = localStorage.getItem('advice') || 'No advice found. Please go back and generate your advice.';
 
-<h3>🌱 Crop Advice</h3>
+    document.getElementById('hero-sub').textContent =
+      `Prepared especially for ${name}`;
+    document.getElementById('advice-display').textContent = advice;
+  });
 
-<div class="advice-box">
-<pre id="advice">Loading AI advice...</pre>
-</div>
-
-</div>
-
-<div class="tips">
-
-<h3>💡 Quick Farming Tips</h3>
-
-<ul>
-<li>Monitor soil moisture regularly</li>
-<li>Use balanced fertilizers</li>
-<li>Check weather forecasts before irrigation</li>
-<li>Inspect crops for pests weekly</li>
-</ul>
-
-</div>
-
-<div class="button-section">
-
-<button onclick="goBack()">🔁 Ask for Advice Again</button>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="script.js"></script>
+  function shareAdvice() {
+    const advice = localStorage.getItem('advice') || '';
+    if (navigator.share) {
+      navigator.share({
+        title: 'My AI Farming Advice',
+        text: advice,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(advice).then(() => {
+        const btn = document.querySelector('.btn-secondary');
+        btn.textContent = '✅ Copied to clipboard!';
+        setTimeout(() => btn.textContent = '📤 Share Report', 2500);
+      });
+    }
+  }
+</script>
 
 </body>
-
 </html>

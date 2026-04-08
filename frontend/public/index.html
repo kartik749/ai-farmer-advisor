@@ -1,84 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Farmer Adviser</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Farmer Adviser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main">
-    <div class="header">
-        <h1>🌾 AI Farmer Adviser</h1>
-        <p>Smart farming advice powered by AI</p>
-    </div>
+  <!-- Animated background -->
+  <div class="bg-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <div class="orb orb4"></div>
+  </div>
+  <div class="grain"></div>
 
-    <div class="container">
-        <div class="card">
-            <h2>🤖 AI Farming Advice</h2>
-            <div class="input-group">
-                <span class="icon">👤</span>
-                <input id="name" placeholder="Farmer Name">
+  <div class="page-wrapper">
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="logo-mark">🌾</div>
+      <div class="header-text">
+        <h1>AI Farmer <span class="accent">Adviser</span></h1>
+        <p>Intelligent crop guidance, powered by artificial intelligence</p>
+      </div>
+      <div class="header-badge">Beta</div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('advice', this)">
+        <span class="tab-icon">🤖</span> AI Farming Advice
+      </button>
+      <button class="tab-btn" onclick="switchTab('yield', this)">
+        <span class="tab-icon">📊</span> Yield Prediction
+      </button>
+    </nav>
+
+    <!-- ── ADVICE PANEL ── -->
+    <div class="panel" id="panel-advice">
+      <div class="panel-grid">
+
+        <!-- Left: Form -->
+        <div class="form-card">
+          <div class="card-label">Step 1 — Tell us about your farm</div>
+
+          <div class="field-group">
+            <label>Farmer Name</label>
+            <div class="input-wrap">
+              <span class="field-icon">👤</span>
+              <input id="name" type="text" placeholder="e.g. Rajendra Singh" autocomplete="off"/>
             </div>
-            <div class="input-group">
-                <span class="icon">🌾</span>
-                <input id="crop" placeholder="Crop (Wheat, Rice, etc.)">
+          </div>
+
+          <div class="field-group">
+            <label>Crop Type</label>
+            <div class="input-wrap">
+              <span class="field-icon">🌾</span>
+              <input id="crop" type="text" placeholder="e.g. Wheat, Rice, Bajra" autocomplete="off"/>
             </div>
-            <div class="input-group">
-                <span class="icon">🌋</span>
-                <input id="soil" placeholder="Soil Type">
+          </div>
+
+          <div class="field-group">
+            <label>Soil Type</label>
+            <div class="input-wrap">
+              <span class="field-icon">🌋</span>
+              <input id="soil" type="text" placeholder="e.g. Loamy, Sandy, Black" autocomplete="off"/>
             </div>
-            <div class="input-group">
-                <span class="icon">☀️</span>
-                <input id="weather" placeholder="Weather Conditions">
+          </div>
+
+          <div class="field-group">
+            <label>Weather Conditions</label>
+            <div class="input-wrap">
+              <span class="field-icon">☀️</span>
+              <input id="weather" type="text" placeholder="e.g. Hot & dry, Monsoon" autocomplete="off"/>
             </div>
-            <div class="input-group">
-                <span class="icon">🌐</span>
-                <select id="language">
-                    <option value="hindi">Hindi</option>
-                    <option value="english">English</option>
-                </select>
+          </div>
+
+          <div class="field-group">
+            <label>Response Language</label>
+            <div class="input-wrap select-wrap">
+              <span class="field-icon">🌐</span>
+              <select id="language">
+                <option value="hindi">हिंदी (Hindi)</option>
+                <option value="english">English</option>
+              </select>
+              <span class="select-arrow">▾</span>
             </div>
-            <button id="adviceBtn" onclick="generateAdvice()">Get AI Advice</button>
-            <div id="advice_result" class="result-box">
-                <small>AI Advice:</small>
-            </div>
+          </div>
+
+          <button class="cta-btn" id="adviceBtn" onclick="generateAdvice()">
+            <span class="btn-text">Get AI Advice</span>
+            <span class="btn-shine"></span>
+          </button>
         </div>
 
-        <div class="card">
-            <h2>📊 Crop Yield Prediction</h2>
-            <div class="input-group">
-                <span class="icon">In</span>
+        <!-- Right: Result -->
+        <div class="result-card" id="advice-result-card">
+          <div class="result-idle" id="advice-idle">
+            <div class="idle-icon">🌱</div>
+            <p class="idle-title">Your advice will appear here</p>
+            <p class="idle-sub">Fill in the details and click <strong>Get AI Advice</strong></p>
+          </div>
+          <div class="result-loading" id="advice-loading" style="display:none">
+            <div class="loader-ring"></div>
+            <p>Consulting AI farming expert…</p>
+          </div>
+          <div class="result-content" id="advice-content" style="display:none">
+            <div class="result-header">
+              <span class="result-tag">AI Recommendation</span>
+              <span class="result-crop" id="result-crop-name"></span>
+            </div>
+            <div class="result-text" id="advice_result"></div>
+            <button class="copy-btn" onclick="copyAdvice()">📋 Copy Advice</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── YIELD PANEL ── -->
+    <div class="panel" id="panel-yield" style="display:none">
+      <div class="panel-grid">
+
+        <!-- Left: Form -->
+        <div class="form-card">
+          <div class="card-label">Step 1 — Enter field parameters</div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Region</label>
+              <div class="input-wrap select-wrap">
+                <span class="field-icon">🗺️</span>
                 <select id="area">
-                    <option>India</option>
-                    <option>Pakistan</option>
-                    <option>New Zealand</option>
-                    <option>Australia</option>
+                  <option>India</option>
+                  <option>Pakistan</option>
+                  <option>New Zealand</option>
+                  <option>Australia</option>
                 </select>
+                <span class="select-arrow">▾</span>
+              </div>
             </div>
-            <div class="input-group">
-                <span class="icon">🌾</span>
+            <div class="field-group">
+              <label>Crop</label>
+              <div class="input-wrap select-wrap">
+                <span class="field-icon">🌾</span>
                 <select id="crop_prediction">
-                    <option>Wheat</option>
-                    <option>Rice</option>
-                    <option>Soyabeans</option>
-                    <option>Potatoes</option>
+                  <option>Wheat</option>
+                  <option>Rice</option>
+                  <option>Soyabeans</option>
+                  <option>Potatoes</option>
                 </select>
+                <span class="select-arrow">▾</span>
+              </div>
             </div>
-            <div class="input-group">
-                <span class="icon">📅</span>
-                <input id="year" placeholder="Year">
-            </div>
-            <input id="rainfall" placeholder="Rainfall(in mm)">
-            <input id="pesticide" placeholder="Pesticides">
-            <input id="temperature" placeholder="Temperature">
-            <button id="predictBtn" onclick="predictYield()">Predict Yield</button>
-            <p id="yield_result"></p>
-        </div>
-    </div>
-</div>
+          </div>
 
-<script src="script.js"></script>
+          <div class="field-group">
+            <label>Year</label>
+            <div class="input-wrap">
+              <span class="field-icon">📅</span>
+              <input id="year" type="number" placeholder="e.g. 2024" min="1990" max="2030"/>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Rainfall (mm)</label>
+              <div class="input-wrap">
+                <span class="field-icon">🌧️</span>
+                <input id="rainfall" type="number" placeholder="e.g. 850"/>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Temperature (°C)</label>
+              <div class="input-wrap">
+                <span class="field-icon">🌡️</span>
+                <input id="temperature" type="number" placeholder="e.g. 28"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Pesticides Used (tonnes)</label>
+            <div class="input-wrap">
+              <span class="field-icon">🧪</span>
+              <input id="pesticide" type="number" placeholder="e.g. 12.5"/>
+            </div>
+          </div>
+
+          <button class="cta-btn" id="predictBtn" onclick="predictYield()">
+            <span class="btn-text">Predict Yield</span>
+            <span class="btn-shine"></span>
+          </button>
+        </div>
+
+        <!-- Right: Result -->
+        <div class="result-card" id="yield-result-card">
+          <div class="result-idle" id="yield-idle">
+            <div class="idle-icon">📊</div>
+            <p class="idle-title">Yield estimate will appear here</p>
+            <p class="idle-sub">Enter your parameters and click <strong>Predict Yield</strong></p>
+          </div>
+          <div class="result-loading" id="yield-loading" style="display:none">
+            <div class="loader-ring"></div>
+            <p>Running prediction model…</p>
+          </div>
+          <div class="result-content" id="yield-content" style="display:none">
+            <div class="result-header">
+              <span class="result-tag">Estimated Yield</span>
+              <span class="result-crop" id="result-yield-crop"></span>
+            </div>
+            <div class="yield-display">
+              <div class="yield-number" id="yield_number">—</div>
+              <div class="yield-unit">hg / hectare</div>
+            </div>
+            <div class="yield-bar-wrap">
+              <div class="yield-bar" id="yield-bar"></div>
+            </div>
+            <p class="yield-note" id="yield_result"></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <p>🌾 AI Farmer Adviser &nbsp;·&nbsp; Powered by Artificial Intelligence &nbsp;·&nbsp; Built for Indian Farmers</p>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
